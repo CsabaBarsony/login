@@ -1,6 +1,24 @@
 "use strict";
 
-var app = angular.module("loginApp", ["ngRoute", "loginApp.services"]);
+var app = angular.module("loginApp", ["ngRoute", "loginApp.services"])
+	.factory("authInterceptor",
+		function($q){
+			var interceptor = {
+				request: function(config){
+					return config;
+				}
+		};
+		return interceptor;
+});
+
+/*$rootScope.$on("$routeChangeStart", function(event, next){
+	var userAuthenticated = false;
+
+	if(!userAuthenticated && next.loginRequired){
+		$rootScope.savedLocation = $location.url();
+		$location.path("/login");
+	}
+})*/
 
 app.config(["$routeProvider", function($routeProvider){
 	$routeProvider
@@ -14,6 +32,7 @@ app.config(["$routeProvider", function($routeProvider){
 			controller: "HomeController",
 			templateUrl: "/html/home.html"
 		}).when("/restricted", {
+			loginRequired: true,
 			templateUrl: "/html/restricted.html"
 		}).when("/success", {
 			templateUrl: "/html/success.html"
