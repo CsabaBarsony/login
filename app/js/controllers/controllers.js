@@ -38,6 +38,10 @@ app.config(["$routeProvider", function($routeProvider){
 			templateUrl: "/html/success.html"
 		}).when("/fail", {
 			templateUrl: "/html/fail.html"
+		})
+		.when("/ajax", {
+			controller: "AjaxController",
+			templateUrl: "/html/ajax.html"
 		}).otherwise({redirectTo: "/"});
 }]);
 
@@ -63,4 +67,21 @@ app.controller("LoginController", ["$scope", "$location", "LoginService", "UserS
 app.controller("LogoutController", ["$scope", "$location", "UserService", function($scope, $location, UserService){
 	UserService.user.loggedIn = false;
 	$location.path("/");
+}]);
+
+app.controller("AjaxController", ["$scope", "$http", function($scope, $http){
+	$scope.result = "init";
+	var doXHR = function(service){
+		$http.get(service).success(function(data, status, headers, config){
+			$scope.result = data;
+		}).error(function(data, status, headers, config){
+				$scope.result = "error";
+		});
+	};
+	$scope.button1 = function(){
+		doXHR("/service1");
+	};
+	$scope.button2 = function(){
+		doXHR("/service2");
+	};
 }]);
